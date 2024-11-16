@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Withdrawal</title>
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <style>
+        /* Custom Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #4c669f, #3b5998, #192f6a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .atm-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #4caf50;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: #f44336;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e53935;
+            transform: scale(1.05);
+        }
+
+        .message {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="atm-container text-center max-w-sm mx-auto">
+        <h1 class="text-2xl font-extrabold mb-4">ATM Withdrawal</h1>
+        <p class="text-sm mb-6">Secure and Fast Transactions</p>
+        <div>
+            <label for="amount" class="block text-lg font-semibold mb-2">Enter Amount</label>
+            <input 
+                type="number" 
+                id="amount" 
+                class="w-full px-4 py-2 border rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Enter multiples of $100" 
+            />
+            <p id="message" class="hidden text-sm mt-2"></p>
+        </div>
+        <div class="flex gap-4 mt-6">
+            <button 
+                id="confirmButton" 
+                class="btn-primary w-full text-white font-bold py-2 rounded-lg hover:shadow-lg">
+                Confirm
+            </button>
+            <button 
+                id="cancelButton" 
+                class="btn-secondary w-full text-white font-bold py-2 rounded-lg hover:shadow-lg">
+                Cancel
+            </button>
+        </div>
+        <div class="mt-4 text-sm opacity-75">
+            <p>Available balance: <span id="balance">$1000</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Initial balance
+        let balance = 1000; // Example balance in dollars
+
+        // Select elements
+        const amountInput = document.getElementById("amount");
+        const message = document.getElementById("message");
+        const confirmButton = document.getElementById("confirmButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const balanceElement = document.getElementById("balance");
+
+        // Confirm button logic
+        confirmButton.addEventListener("click", () => {
+            const amount = parseInt(amountInput.value);
+
+            // Reset message
+            message.textContent = "";
+            message.className = "hidden";
+
+            // Validation
+            if (isNaN(amount) || amount <= 0 || amount % 100 !== 0) {
+                message.textContent = "Invalid amount. Please enter multiples of $100.";
+                message.className = "message text-red-500 text-sm";
+                return;
+            }
+
+            // Check balance
+            if (amount > balance) {
+                message.textContent = "Insufficient funds. Your current balance is $" + balance + ".";
+                message.className = "message text-red-500 text-sm";
+            } else {
+                balance -= amount;
+                balanceElement.textContent = `$${balance}`;
+                message.textContent = `Success! $${amount} withdrawn. Remaining balance: $${balance}.`;
+                message.className = "message text-green-500 text-sm";
+            }
+        });
+
+        // Cancel button logic
+        cancelButton.addEventListener("click", () => {
+            amountInput.value = "";
+            message.textContent = "";
+            message.className = "hidden";
+        });
+    </script>
+</body>
+</html>
